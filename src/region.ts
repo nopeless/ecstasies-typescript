@@ -22,12 +22,12 @@ export class Region<T> {
   }
 
   getGid(id: number): number {
-    return this._gid[this._id[id]!]!;
+    return this._gid[this._idx[id]!]!;
   }
 
   set(id: number, value: T, gid: number) {
-    this._gid[this._id[id]!] = gid;
-    return (this.entities[this._id[id]!] = value);
+    this._gid[this._idx[id]!] = gid;
+    return (this.entities[this._idx[id]!] = value);
   }
 
   exists(id: number): boolean {
@@ -54,21 +54,31 @@ export class Region<T> {
     const idx = this._idx[id]!;
     const lastIdx = this.entities.length - 1;
 
-    this._gid.pop();
-
     if (idx === lastIdx) {
+      this._gid.pop();
       return this.entities.pop()!;
     }
 
     // Swap _id and _d entries
     const swapLastId = this._id[lastIdx]!;
     const swapId = this._id[idx]!;
-    [this._id[idx], this._id[lastIdx]] = [swapLastId, swapId];
-    [this.entities[idx], this.entities[lastIdx]] = [this.entities[lastIdx]!, this.entities[idx]!];
+
+    this._id[idx] = swapLastId;
+    this._id[lastIdx] = swapId;
+
+    const tempEntity = this.entities[idx]!;
+    this.entities[idx] = this.entities[lastIdx]!;
+    this.entities[lastIdx] = tempEntity;
+
+    const tempGid = this._gid[idx]!;
+    this._gid[idx] = this._gid[lastIdx]!;
+    this._gid[lastIdx] = tempGid;
 
     // swap _idx entries
-    [this._idx[swapId], this._idx[swapLastId]] = [this._idx[swapLastId]!, this._idx[swapId]!];
+    this._idx[swapId] = lastIdx;
+    this._idx[swapLastId] = idx;
 
+    this._gid.pop();
     return this.entities.pop()!;
   }
 }
