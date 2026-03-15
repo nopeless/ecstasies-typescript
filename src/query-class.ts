@@ -33,7 +33,7 @@ export function createQueryClass<C>(_ecstasy: Ecstasy<C>) {
 
         if (componentName === undefined) {
           throw new EcstasyError(
-            `Component value ${componentValue} is not registered in Ecstasy components`,
+            `Component value ${"" + componentValue} is not registered in Ecstasy components`,
           );
         }
 
