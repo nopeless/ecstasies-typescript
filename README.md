@@ -7,8 +7,9 @@ A low-level ECS library that leans into what is fast for the engine
 bun install
 # testing
 bun test
+
 # building
-bun build src/index --outdir dist --minify
+bun run build
 ```
 
 > [!NOTE] The library uses some relatively new features such as `Iterator.prototype.toArray` and `Map.prototype.getOrInsert`
@@ -45,6 +46,7 @@ TODO
 ## Query system
 
 You have two flavors:
+
 - `query` for a concise, composable, javascript style api, that internally generates and caches optimized queries
 - `Query` for an OOP oriented instantiated query object that can be reused
 
