@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-new-array
 import { bench, group, run, summary } from "mitata";
 import { StableArray } from "./stable-array-implementation";
 
