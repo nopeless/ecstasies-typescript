@@ -1,7 +1,7 @@
-import { expect, it } from "bun:test";
+import { expect, test } from "bun:test";
 import * as PropertyTracking from "../src/lib/property-builder";
 
-it("PropertyTracking", () => {
+test("PropertyTracking", () => {
   const $ = PropertyTracking.create({ a: 0, b: 0 }, []);
 
   // console.log($);

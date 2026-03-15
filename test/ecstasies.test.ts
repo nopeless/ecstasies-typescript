@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { Ecstasy } from "../src/ecstasies";
 import { assert } from "../src/lib/util";
 
@@ -24,7 +24,7 @@ import { assert } from "../src/lib/util";
 
 describe("Ecstasy", () => {
   describe("constructor", () => {
-    it("Component count", () => {
+    test("Component count", () => {
       new Ecstasy({
         components: Object.fromEntries(
           Array.from({ length: 31 }).map((_, i) => [`component${i}`, () => ({})]),
@@ -50,7 +50,7 @@ describe("Ecstasy", () => {
       });
     });
 
-    it("prohibits object prototype properties", () => {
+    test("prohibiting object prototype properties", () => {
       expect(
         () =>
           new Ecstasy({
@@ -64,7 +64,7 @@ describe("Ecstasy", () => {
   });
 
   describe("methods", () => {
-    it("create/get/destroy", () => {
+    test("create/get/destroy", () => {
       const ecs = new Ecstasy({
         components: {
           pos: () => ({ x: 0, y: 0 }),
@@ -125,7 +125,7 @@ describe("Ecstasy", () => {
       expect(ecs._regions.reduce((acc, r) => acc + r.entities.length, 0)).toEqual(0);
     });
 
-    it("modify", () => {
+    test("modify", () => {
       const ecs = new Ecstasy({
         components: {
           pos: () => ({ x: 0, y: 0 }),
@@ -195,7 +195,7 @@ describe("Ecstasy", () => {
   }
 
   describe("new Query", () => {
-    it("constructor", () => {
+    test("constructor", () => {
       const ecs = createFixtureEcstasy();
 
       expect(
@@ -209,7 +209,7 @@ describe("Ecstasy", () => {
       new ecs.Query([ecs.components.pos]);
     });
 
-    it("null query", () => {
+    test("null query", () => {
       const ecs = createFixtureEcstasy();
 
       const query = new ecs.Query([]);
@@ -217,7 +217,7 @@ describe("Ecstasy", () => {
       expect(query.toArray().length).toEqual(ecs.stats().entityCount);
     });
 
-    it("basic query", () => {
+    test("basic query", () => {
       const ecs = createFixtureEcstasy();
 
       const nullQuery = new ecs.Query([]);
@@ -230,7 +230,7 @@ describe("Ecstasy", () => {
       );
     });
 
-    it("combined query", () => {
+    test("combined query", () => {
       const ecs = createFixtureEcstasy();
 
       const nullQuery = new ecs.Query([]);
@@ -245,19 +245,19 @@ describe("Ecstasy", () => {
   });
 
   describe("query()", () => {
-    it("basic", () => {
+    test("basic", () => {
       const ecs = createFixtureEcstasy();
 
       const query = ecs.query(ecs.$.pos);
     });
 
-    it("compound", () => {
+    test("compound", () => {
       const ecs = createFixtureEcstasy();
 
       const query = ecs.query(ecs.$.pos.vel);
     });
 
-    it.skip("combinatorics", () => {
+    test.skip("combinatorics", () => {
       const ecs = createFixtureEcstasy();
 
       // All supported operators
@@ -274,7 +274,7 @@ describe("Ecstasy", () => {
   });
 
   describe("References", () => {
-    it("ref", () => {
+    test("ref", () => {
       const ecs = new Ecstasy({
         components: {
           comp: () =>
