@@ -3,7 +3,6 @@ import { EcstasyError } from "./error";
 import { InlineQuery } from "./inline-query";
 import { Region } from "./region";
 import { createQueryClass } from "./query-class";
-export * from "./lib/polyfill";
 
 /** Compile time symbol */
 const T_NAME = Symbol();
@@ -512,7 +511,7 @@ export class Ecstasy<C> {
 
         if (!ref) console.log(`  refs[${i}]: <invalid ref>`);
         else {
-          console.log(`  refs[${i}]:`, JSON.stringify(ref), "@", `"${prop?.toString()}"`);
+          console.log(`  refs[${i}]:`, JSON.stringify(ref), "@", prop);
         }
       }
     }
