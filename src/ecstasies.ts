@@ -19,13 +19,13 @@ export type ECB = void | (() => unknown);
 
 type EcstasyOptions<C> = {
   components: EcstasyComponents<C>;
-  autoflush?: boolean;
+  noAutoflush?: boolean;
   selfId?: keyof C;
   one: 1n | 1;
 };
 
 export class Ecstasy<C> {
-  autoflush: boolean;
+  doAutoflush: boolean;
   selfId: keyof C | undefined;
   _selfIdMap: Map<any, number> = new Map();
 
@@ -64,7 +64,7 @@ export class Ecstasy<C> {
   T: { [K in keyof C]?: C[K] };
 
   constructor(options: EcstasyOptions<C>) {
-    this.autoflush = options.autoflush ?? true;
+    this.doAutoflush = !(options.noAutoflush ?? true);
     this.selfId = options.selfId;
     this._selfIdMap = new Map();
 
@@ -190,7 +190,7 @@ export class Ecstasy<C> {
   _endRead() {
     this._readerCount--;
 
-    if (this._readerCount === 0 && this.autoflush) {
+    if (this._readerCount === 0 && this.doAutoflush) {
       this.flush();
     }
   }
@@ -401,7 +401,7 @@ export class Ecstasy<C> {
     };
 
     console.log("=== Info ===");
-    console.log(` Autoflush:`, this.autoflush);
+    console.log(` Autoflush:`, this.doAutoflush);
     console.log(` One:`, this._one);
     console.log();
 
