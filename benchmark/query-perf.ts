@@ -1,4 +1,4 @@
-import { bench, do_not_optimize, run } from "mitata";
+import { bench, run } from "mitata";
 import { Ecstasy } from "../src";
 
 const ecs = new Ecstasy({

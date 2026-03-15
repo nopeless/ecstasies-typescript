@@ -1,9 +1,9 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { Ecstasy } from "../src/ecstasies";
 import { assert } from "../src/lib/util";
 
 // typechecks
-// eslint-disable-next-line @eslint/no-unused-expressions
+// oxlint-disable-next-line no-unused-expressions
 () => {
   // declare function assertType
 

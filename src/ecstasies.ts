@@ -1,8 +1,9 @@
+import * as PropertyBuilder from "./lib/property-builder";
 import { EcstasyError } from "./error";
 import { InlineQuery } from "./inline-query";
-import * as PropertyBuilder from "./lib/property-builder";
-import { createQueryClass } from "./query-class";
 import { Region } from "./region";
+import { createQueryClass } from "./query-class";
+export * from "./lib/polyfill";
 
 /** Compile time symbol */
 const T_NAME = Symbol();
@@ -91,7 +92,7 @@ export class Ecstasy<C> {
 
       if (!this._componentNextBit) {
         throw new EcstasyError(
-          `Too many components, exceeded bitmask limit of <32. Set options.one to 1n to accommodate this\n${
+          `Too many components, exceeded bitmask limit of <32 (or options.one was not provided). Set options.one to 1n to accommodate this\n${
             // Component list
             Object.keys(this.components)
               .map((k) => `  - ${k}`)
