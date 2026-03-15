@@ -52,7 +52,7 @@ TODO
 
 ## Autoflush
 
-If autoflush is disabled, entity add/remove operations will not be reflected until flush is called. If enabled, queries will automatically run all pending operations after finishing iteration
+If `options.noAutoflush` is set, entity add/remove operations will not be reflected until flush is called. By default, queries will automatically run all pending operations after finishing iteration
 
 ## Example
 
