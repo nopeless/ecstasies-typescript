@@ -28,6 +28,9 @@ describe("Bitter", () => {
       bitter.components.velocity.y[id] = (Math.random() - 0.5) * 10;
       bitter.components.acceleration[id] = 0;
       bitter.components.mass[id] = Math.random() * 10 + 1;
+
+      bitter.archetype[id] =
+        bitter.bit.position | bitter.bit.velocity | bitter.bit.acceleration | bitter.bit.mass;
     }
 
     const queryMovement = bitter.bit.position | bitter.bit.velocity;
