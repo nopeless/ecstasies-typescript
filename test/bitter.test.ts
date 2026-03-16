@@ -20,7 +20,7 @@ describe("Bitter", () => {
     });
 
     // create a simple collision system
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1_000; i++) {
       const id = bitter.create();
       bitter.components.position.x[id] = Math.random() * 100;
       bitter.components.position.y[id] = Math.random() * 100;
