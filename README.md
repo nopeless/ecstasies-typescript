@@ -1,4 +1,4 @@
-# Ecstasy [WIP]
+# Ecstasy & Bitter [WIP]
 
 A low-level ECS library that leans into what is fast for the engine
 
