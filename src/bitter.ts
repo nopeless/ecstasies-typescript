@@ -43,6 +43,7 @@ export class Bitter<C extends WithLeaves<new (capacity: number) => ArrayBufferVi
     this.capacity = options.capacity;
 
     this.entitiesLength = 0;
+
     this.freeIds = new Int32Array(this.capacity);
     this.freeIdsLength = 0;
 
@@ -56,11 +57,9 @@ export class Bitter<C extends WithLeaves<new (capacity: number) => ArrayBufferVi
         // @ts-ignore
         return new (obj as any)(this.capacity);
       } else if (typeof obj === "object" && obj !== null) {
-        const result: any = {};
-        for (const [key, value] of Object.entries(obj)) {
-          result[key] = instantiate(value);
-        }
-        return result;
+        return Object.fromEntries(
+          Object.entries(obj).map(([key, value]) => [key, instantiate(value)]),
+        );
       } else {
         throw new EcstasyError("Leaf must be a valid constructor or object");
       }
