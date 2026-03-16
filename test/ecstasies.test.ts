@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { Ecstasy } from "../src/ecstasies";
+import { Ecstasy } from "../src";
 import { assert } from "../src/lib/util";
 
 // typechecks
