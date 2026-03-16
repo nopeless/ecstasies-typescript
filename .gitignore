@@ -1,8 +1,6 @@
 /?.*
 /.vscode/
 
-/index.js
-
 # dependencies (bun install)
 /node_modules
 
