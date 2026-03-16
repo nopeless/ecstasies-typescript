@@ -1,6 +1,6 @@
 import { EcstasyError } from "./error";
 
-const validConstructors = new Set([
+const validConstructors = [
   Int8Array,
   Uint8Array,
   Uint8ClampedArray,
@@ -10,12 +10,9 @@ const validConstructors = new Set([
   Uint32Array,
   Float32Array,
   Float64Array,
-]);
+] as const;
 
-export type TypedArray =
-  typeof validConstructors extends Set<infer T extends abstract new (...args: any) => any>
-    ? InstanceType<T>
-    : never;
+export type TypedArray = InstanceType<(typeof validConstructors)[number]>;
 
 type WithLeaves<T> = T | { [key: string]: WithLeaves<T> };
 
@@ -58,26 +55,25 @@ export class Bitter<C extends WithLeaves<new (capacity: number) => TypedArray>> 
     this.archetype = new Int32Array(this.capacity);
 
     // Recursively build a fresh object, instantiating leaves
-    const instantiate = (
-      obj: WithLeaves<new (capacity: number) => ArrayBufferView>,
-      root: boolean = false,
-    ): InstantiateLeaves<typeof obj> => {
-      if (validConstructors.has(obj as any)) {
-        const array = new (obj as any)(this.capacity);
-        this._componentPosArrays.at(-1)!.push(array);
-        return array as InstantiateLeaves<typeof obj>;
-      } else if (typeof obj === "object" && obj !== null) {
-        return Object.fromEntries(
-          Object.entries(obj).map(([key, value], idx) => {
+    const instantiate = (obj: any, root: boolean = false): any => {
+      if (!~validConstructors.indexOf(obj as any)) {
+        if (typeof obj === "object" && obj !== null) {
+          const result: any = {};
+          for (const [key, value] of Object.entries(obj)) {
             if (root) {
               this._componentPosArrays.push([]);
             }
-            return [key, instantiate(value)];
-          }),
-        );
-      } else {
-        throw new EcstasyError("Leaf must be a valid constructor or object");
+            result[key] = instantiate(value);
+          }
+          return result;
+        } else {
+          throw new EcstasyError("Leaf must be a valid constructor or object");
+        }
       }
+
+      const array = new obj(this.capacity);
+      this._componentPosArrays.at(-1)!.push(array as TypedArray);
+      return array;
     };
 
     this.components = instantiate(options.components, true) as InstantiateLeaves<C>;
