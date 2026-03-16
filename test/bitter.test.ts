@@ -14,18 +14,58 @@ describe("Bitter", () => {
           x: Float64Array,
           y: Float64Array,
         },
+        acceleration: Float64Array,
+        mass: Float64Array,
       },
     });
 
-    console.log(bitter.components);
+    // create a simple collision system
+    for (let i = 0; i < 1000; i++) {
+      const id = bitter.create();
+      bitter.components.position.x[id] = Math.random() * 100;
+      bitter.components.position.y[id] = Math.random() * 100;
+      bitter.components.velocity.x[id] = (Math.random() - 0.5) * 10;
+      bitter.components.velocity.y[id] = (Math.random() - 0.5) * 10;
+      bitter.components.acceleration[id] = 0;
+      bitter.components.mass[id] = Math.random() * 10 + 1;
+    }
 
-    const e1 = bitter.create();
+    const queryMovement = bitter.bit.position | bitter.bit.velocity;
 
-    bitter.archetype[e1]! |= bitter.bit.position | bitter.bit.velocity;
+    const systemFriction = () => {
+      for (let id = 0; id < bitter.entitiesLength; id++) {
+        if ((bitter.archetype[id]! & queryMovement) === queryMovement) {
+          bitter.components.acceleration[id]! =
+            -0.1 *
+            Math.sqrt(
+              bitter.components.velocity.x[id]! ** 2 + bitter.components.velocity.y[id]! ** 2,
+            );
+        }
+      }
+    };
 
-    bitter.components.position.x[e1] = 0;
-    bitter.components.position.y[e1] = 0;
-    bitter.components.velocity.x[e1] = 1;
-    bitter.components.velocity.y[e1] = 1;
+    const systemVelocityUpdate = () => {
+      for (let id = 0; id < bitter.entitiesLength; id++) {
+        if ((bitter.archetype[id]! & queryMovement) === queryMovement) {
+          bitter.components.velocity.x[id]! += bitter.components.acceleration[id]!;
+          bitter.components.velocity.y[id]! += bitter.components.acceleration[id]!;
+        }
+      }
+    };
+
+    const systemMovementUpdate = () => {
+      for (let id = 0; id < bitter.entitiesLength; id++) {
+        if ((bitter.archetype[id]! & queryMovement) === queryMovement) {
+          bitter.components.position.x[id]! += bitter.components.velocity.x[id]!;
+          bitter.components.position.y[id]! += bitter.components.velocity.y[id]!;
+        }
+      }
+    };
+
+    for (let i = 0; i < 100; i++) {
+      systemFriction();
+      systemVelocityUpdate();
+      systemMovementUpdate();
+    }
   });
 });
