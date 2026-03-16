@@ -39,7 +39,7 @@ export class Ecstasy<C> {
   /** ArchetypeId -> RegionIdx */
   _archetypes: Map<bigint, number>;
 
-  /** sparse set + interleaved [RegionIdx, LocalIdx] */
+  /** sparse array + interleaved [RegionIdx, LocalIdx] */
   _regionidx_localidx_array: number[];
   _regionidx_localidx_array_freeidx2: number[];
 
@@ -74,6 +74,13 @@ export class Ecstasy<C> {
 
     // Cast is needed to add compile time T_NAME property to the function type
     this.components = options.components as EcstasyComponents<C>;
+    Object.values(this.components).forEach((c) => {
+      if (c !== Object(c)) {
+        throw new EcstasyError(
+          `Component "${c}" is not an object or a function. Components must be non-primitives`,
+        );
+      }
+    });
 
     // Generate component bitmask inline
     this._componentBitmask = Object.create(null) as Record<keyof C, bigint>;
