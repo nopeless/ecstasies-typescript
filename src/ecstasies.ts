@@ -75,9 +75,9 @@ export class Ecstasy<C> {
     // Cast is needed to add compile time T_NAME property to the function type
     this.components = options.components as EcstasyComponents<C>;
     Object.values(this.components).forEach((c) => {
-      if (c !== Object(c)) {
+      if (typeof c !== "function") {
         throw new EcstasyError(
-          `Component "${c}" is not an object or a function. Components must be non-primitives`,
+          `Component "${c}" is not a function. Components must be non-primitives`,
         );
       }
     });
@@ -131,6 +131,7 @@ export class Ecstasy<C> {
   stats() {
     return {
       entityCount: this._regions.reduce((sum, region) => sum + region.entities.length, 0),
+      entityFreeIdCount: this._regionidx_localidx_array_freeidx2.length,
       regionCount: this._regions.length,
       archetypeCount: this._archetypes.size,
       queryCount: this._queries.size,
@@ -149,7 +150,19 @@ export class Ecstasy<C> {
     this._regions.push(region);
   }
 
+  _assertNoReaders() {
+    if (this._readerCount > 0) {
+      throw new EcstasyError(
+        "Cannot modify entity archetype as there is an active query." +
+          "This can occur if you call modify() inside a query callback." +
+          "Deferring the modify call instead (return () => ...)",
+      );
+    }
+  }
+
   create(entity: EcstasyEntity<C> = {}): number {
+    this._assertNoReaders();
+
     const keys = Object.keys(entity) as (keyof C)[];
 
     let archetype = this._zero;
@@ -203,6 +216,8 @@ export class Ecstasy<C> {
   }
 
   modify(id: number, components: EcstasyEntity<C>) {
+    this._assertNoReaders();
+
     // Get valid id2
     const id2 = id * 2;
     const regionIdx = this._regionidx_localidx_array[id2];
@@ -253,14 +268,6 @@ export class Ecstasy<C> {
     // No change occurred
     if (archetype === region.archetype) return entity;
 
-    if (this._readerCount > 0) {
-      throw new EcstasyError(
-        "Cannot modify entity archetype as there is an active query." +
-          "This can occur if you call modify() inside a query callback." +
-          "Deferring the modify call instead (return () => ...)",
-      );
-    }
-
     // Remove from old region
     region.remove(localIdx);
 
@@ -300,6 +307,8 @@ export class Ecstasy<C> {
   }
 
   destroy(id: number) {
+    this._assertNoReaders();
+
     // Get valid id2
     const id2 = id * 2;
     const regionIdx = this._regionidx_localidx_array[id2];
